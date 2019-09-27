@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DataSetObserver;
@@ -45,10 +47,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Song> songsArray;
     RecyclerView recyclerView;
     MyAdapter adapter;
-    File[] files;
     byte [] cover;
     Bitmap image;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,9 +141,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mToggle.onOptionsItemSelected(item))
+        if (mToggle.onOptionsItemSelected(item)){
             return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+    public void Search (MenuItem menuItem){
+        Intent intent = new Intent(this,SearchActivity.class);
+        startActivity(intent);
     }
 
 }

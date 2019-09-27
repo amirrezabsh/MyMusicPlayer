@@ -6,5 +6,6 @@
      app:showAsAction="always"
      android:title=""
      android:icon="@drawable/search_icon"
+     android:onClick="Search"
      />
 </menu>
