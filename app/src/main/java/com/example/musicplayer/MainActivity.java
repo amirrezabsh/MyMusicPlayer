@@ -1,5 +1,5 @@
 package com.example.musicplayer;
-
+import java.util.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +38,10 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_REQUEST = 1;
@@ -47,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Song> songsArray;
     RecyclerView recyclerView;
     MyAdapter adapter;
-    byte [] cover;
+    byte[] cover;
     Bitmap image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,40 +74,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMusic() {
-        MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
         ContentResolver contentResolver = getContentResolver();
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor songCursor = null;
-        songCursor = contentResolver.query(songUri, null, null, null,"");
+        songCursor = contentResolver.query(songUri, null, null, null, "");
         if (songCursor != null && songCursor.moveToFirst()) {
             int songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int idColumn = songCursor.getColumnIndex(BaseColumns._ID);
+            int songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
             int column_index = songCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
 
             do {
-                long thisId = songCursor.getLong(idColumn);
                 String pathId = songCursor.getString(column_index);
                 Log.d(this.getClass().getName(), "path id=" + pathId);
-
-                metadataRetriever.setDataSource(pathId);
-                try {
-                    cover = metadataRetriever.getEmbeddedPicture();
-                    BitmapFactory.Options opt = new BitmapFactory.Options();
-                    opt.inSampleSize = 2;
-                    image = BitmapFactory .decodeByteArray(cover, 0, cover.length,opt);
-                }
-                catch (Exception e)
-                {
-                }
-
-
                 String currentTitle = songCursor.getString(songTitle);
                 String currentArtist = songCursor.getString(songArtist);
-                songsArray.add(new Song(currentArtist, currentTitle,image));
+                String currentAlbum = songCursor.getString(songAlbum);
+                songsArray.add(new Song(currentArtist, currentTitle, pathId,currentAlbum));
             }
             while (songCursor.moveToNext());
         }
+        Collections.sort(songsArray, new Comparator<Song>() {
+            @Override
+            public int compare(Song song, Song t1) {
+                Log.d("Hello", song.getTitle().compareTo(t1.getTitle()) + song.getTitle() + t1.getTitle()+ song.getPathId());
+                return song.getTitle().compareTo(t1.getTitle()) ;
+            }
+        });
     }
 
     @Override
@@ -128,8 +125,6 @@ public class MainActivity extends AppCompatActivity {
         songsArray = new ArrayList<>();
         getMusic();
         adapter = new MyAdapter(songsArray);
-
-
         recyclerView.setAdapter(adapter);
     }
 
@@ -141,14 +136,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mToggle.onOptionsItemSelected(item)){
+        if (mToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    public void Search (MenuItem menuItem){
-        Intent intent = new Intent(this,SearchActivity.class);
-        startActivity(intent);
+
+    public void Search(MenuItem menuItem) {
+        Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra("songs",songsArray);
+            try {
+            startActivity(intent);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 }

@@ -6,7 +6,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cardview_light_background">
+    android:background="@color/cardview_light_background"
+    >
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/recyclerImage"
         android:layout_width="100dp"
@@ -27,12 +28,20 @@
             android:id="@+id/songName"
             android:textStyle="bold"
             android:textSize="20dp"
+            android:maxLines="1"
             android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/artistName"
             android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/albumName"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
