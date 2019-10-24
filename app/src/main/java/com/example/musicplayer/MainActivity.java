@@ -1,6 +1,6 @@
 package com.example.musicplayer;
 import java.util.*;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -10,37 +10,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,9 +36,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Song> songsArray;
     RecyclerView recyclerView;
     MyAdapter adapter;
-    byte[] cover;
-    Bitmap image;
-
+    Timer timer;
+    int currentSongIndex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,5 +136,17 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(e);
         }
     }
+    public void playMusic (View view) throws IOException {
+        Intent intent = new Intent(this, SongPage.class);
+        Bundle bundle = new Bundle();
+        Song currentSong = songsArray.get(recyclerView.getChildLayoutPosition(view));
+        bundle.putSerializable("currentSong",currentSong);
+        bundle.putInt("index",recyclerView.getChildLayoutPosition(view));
+        bundle.putSerializable("songs Array",songsArray);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+
 
 }

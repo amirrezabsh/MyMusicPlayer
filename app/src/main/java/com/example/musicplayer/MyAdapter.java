@@ -61,6 +61,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     }
 
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
     @Override
     public int getItemCount() {
         return myDataset.size();

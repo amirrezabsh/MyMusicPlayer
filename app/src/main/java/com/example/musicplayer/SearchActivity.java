@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 public class SearchActivity extends AppCompatActivity implements  TextWatcher {
     EditText editText;
-    MainActivity mainActivity = new MainActivity();
     TextView textView;
     RecyclerView recyclerView;
     ArrayList<Song> searchSongs = new ArrayList<>();
