@@ -48,6 +48,8 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
     boolean repeated = false;
     ImageButton favoriteButton;
     ImageButton repeatButton;
+    int index;
+    TextView songLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +59,18 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
         favoriteButton = findViewById(R.id.favorite_button);
         repeatButton = findViewById(R.id.repeat_button);
         bundle = getIntent().getExtras();
-        song = (Song) bundle.getSerializable("currentSong");
-        songName = findViewById(R.id.songNameInSongPage);
-        songName.setText(song.getTitle());
         songsArray = (ArrayList<Song>) bundle.getSerializable("songs Array");
+        index = bundle.getInt("index");
+        seekBar = findViewById(R.id.seekBar);
+        songLength = findViewById(R.id.length);
+        songName = findViewById(R.id.songNameInSongPage);
+        play = findViewById(R.id.playButton);
+        imageView = findViewById(R.id.songImage);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        seekBar.setOnSeekBarChangeListener(this);
+        song = songsArray.get(index);
+        songName.setText(song.getTitle());
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.reset();
@@ -74,12 +84,9 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
 
         }
         mediaPlayer.start();
-        play = findViewById(R.id.playButton);
         play.setImageResource(R.drawable.pause_button);
         mediaPlayer.setVolume(0.5f, 0.5f);
         mediaPlayer.setLooping(false);
-
-        imageView = findViewById(R.id.songImage);
         MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
         try {
             metadataRetriever.setDataSource(song.getPathId());
@@ -97,10 +104,6 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
         if (cover == null) {
             imageView.setImageResource(R.drawable.music_icon);
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        seekBar = findViewById(R.id.seekBar);
-        TextView songLength = findViewById(R.id.length);
         currentTime.setText(0 + ":" + 00);
         String length = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         seekBar.setMax(mediaPlayer.getDuration());
@@ -111,7 +114,6 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
             lengthSecond = String.valueOf((Long.parseLong(length) % 60000 / 1000));
         length = lengthMin + ":" + lengthSecond;
         songLength.setText(length);
-        seekBar.setOnSeekBarChangeListener(this);
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -129,8 +131,27 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
             }
         }, 0, 500);
         metadataRetriever.release();
-    }
 
+    }
+    public void autoNextMusic (){
+        Bundle bundleForNext = new Bundle();
+        Intent intent = new Intent(this, SongPage.class);
+        if (bundle.getInt("index") + 1 > songsArray.size()) {
+            bundleForNext.putSerializable("currentSong", songsArray.get(0));
+            bundleForNext.putInt("index", 0);
+            bundleForNext.putSerializable("songs Array", songsArray);
+            intent.putExtras(bundleForNext);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        bundleForNext.putSerializable("currentSong", songsArray.get(bundle.getInt("index") + 1));
+        bundleForNext.putInt("index", bundle.getInt("index") + 1);
+        bundleForNext.putSerializable("songs Array", songsArray);
+        intent.putExtras(bundleForNext);
+        startActivity(intent);
+        finish();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -164,7 +185,7 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
     public void nextMusic(View view) {
         Bundle bundleForNext = new Bundle();
         Intent intent = new Intent(this, SongPage.class);
-        if (bundle.getInt("index") + 1>songsArray.size()){
+        if (bundle.getInt("index") + 1 > songsArray.size()) {
             bundleForNext.putSerializable("currentSong", songsArray.get(0));
             bundleForNext.putInt("index", 0);
             bundleForNext.putSerializable("songs Array", songsArray);
@@ -212,10 +233,11 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
             repeated = true;
         }
     }
-    public void previousMusic (View view){
+
+    public void previousMusic(View view) {
         Bundle bundleForNext = new Bundle();
         Intent intent = new Intent(this, SongPage.class);
-        if (bundle.getInt("index") - 1 < 0){
+        if (bundle.getInt("index") - 1 < 0) {
             return;
         }
         bundleForNext.putSerializable("currentSong", songsArray.get(bundle.getInt("index") - 1));

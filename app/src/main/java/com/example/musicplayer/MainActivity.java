@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(e);
         }
     }
-    public void playMusic (View view) throws IOException {
+    public void playMusic (View view)  {
         Intent intent = new Intent(this, SongPage.class);
         Bundle bundle = new Bundle();
         Song currentSong = songsArray.get(recyclerView.getChildLayoutPosition(view));

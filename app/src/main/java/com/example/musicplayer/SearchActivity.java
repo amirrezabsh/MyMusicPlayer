@@ -1,6 +1,7 @@
 package com.example.musicplayer;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -96,5 +97,15 @@ public class SearchActivity extends AppCompatActivity implements  TextWatcher {
     @Override
     public void afterTextChanged(Editable editable) {
 
+    }
+    public void playMusic (View view)  {
+        Intent intent = new Intent(this, SongPage.class);
+        Bundle bundle = new Bundle();
+        Song currentSong = searchSongs.get(recyclerView.getChildLayoutPosition(view));
+        bundle.putSerializable("currentSong",currentSong);
+        bundle.putInt("index",recyclerView.getChildLayoutPosition(view));
+        bundle.putSerializable("songs Array",searchSongs);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
