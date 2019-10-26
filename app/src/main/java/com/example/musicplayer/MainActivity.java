@@ -139,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
     public void playMusic (View view)  {
         Intent intent = new Intent(this, SongPage.class);
         Bundle bundle = new Bundle();
-        Song currentSong = songsArray.get(recyclerView.getChildLayoutPosition(view));
-        bundle.putSerializable("currentSong",currentSong);
         bundle.putInt("index",recyclerView.getChildLayoutPosition(view));
         bundle.putSerializable("songs Array",songsArray);
         intent.putExtras(bundle);

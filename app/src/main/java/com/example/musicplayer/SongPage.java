@@ -136,8 +136,7 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
     public void autoNextMusic (){
         Bundle bundleForNext = new Bundle();
         Intent intent = new Intent(this, SongPage.class);
-        if (bundle.getInt("index") + 1 > songsArray.size()) {
-            bundleForNext.putSerializable("currentSong", songsArray.get(0));
+        if (++index > songsArray.size()) {
             bundleForNext.putInt("index", 0);
             bundleForNext.putSerializable("songs Array", songsArray);
             intent.putExtras(bundleForNext);
@@ -145,8 +144,7 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
             finish();
             return;
         }
-        bundleForNext.putSerializable("currentSong", songsArray.get(bundle.getInt("index") + 1));
-        bundleForNext.putInt("index", bundle.getInt("index") + 1);
+        bundleForNext.putInt("index", index);
         bundleForNext.putSerializable("songs Array", songsArray);
         intent.putExtras(bundleForNext);
         startActivity(intent);
@@ -186,7 +184,6 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
         Bundle bundleForNext = new Bundle();
         Intent intent = new Intent(this, SongPage.class);
         if (bundle.getInt("index") + 1 > songsArray.size()) {
-            bundleForNext.putSerializable("currentSong", songsArray.get(0));
             bundleForNext.putInt("index", 0);
             bundleForNext.putSerializable("songs Array", songsArray);
             intent.putExtras(bundleForNext);
@@ -194,7 +191,6 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
             finish();
             return;
         }
-        bundleForNext.putSerializable("currentSong", songsArray.get(bundle.getInt("index") + 1));
         bundleForNext.putInt("index", bundle.getInt("index") + 1);
         bundleForNext.putSerializable("songs Array", songsArray);
         intent.putExtras(bundleForNext);
@@ -240,7 +236,6 @@ public class SongPage extends AppCompatActivity implements SeekBar.OnSeekBarChan
         if (bundle.getInt("index") - 1 < 0) {
             return;
         }
-        bundleForNext.putSerializable("currentSong", songsArray.get(bundle.getInt("index") - 1));
         bundleForNext.putInt("index", bundle.getInt("index") - 1);
         bundleForNext.putSerializable("songs Array", songsArray);
         intent.putExtras(bundleForNext);
